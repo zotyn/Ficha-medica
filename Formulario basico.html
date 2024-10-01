@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Clínica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .button-group {
+            text-align: right;
+        }
+        .button-group button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .button-group button.reset {
+            background-color: #f44336;
+        }
+        .button-group button.search {
+            background-color: #008CBA;
+        }
+        .button-group button.close {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h2>Ficha Médica</h2>
+    <form id="medicalForm">
+        <label for="rut">RUT:</label>
+        <input type="text" id="rut" name="rut" required>
+
+        <label for="nombres">Nombres:</label>
+        <input type="text" id="nombres" name="nombres" required>
+
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" id="apellidos" name="apellidos" required>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" required>
+
+        <label for="ciudad">Ciudad:</label>
+        <input type="text" id="ciudad" name="ciudad" required>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="tel" id="telefono" name="telefono" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+
+        <label for="estado_civil">Estado Civil:</label>
+        <select id="estado_civil" name="estado_civil" required>
+            <option value="soltero">Soltero</option>
+            <option value="casado">Casado</option>
+            <option value="divorciado">Divorciado</option>
+            <option value="viudo">Viudo</option>
+        </select>
+
+        <label for="comentarios">Comentarios:</label>
+        <textarea id="comentarios" name="comentarios" rows="4"></textarea>
+
+        <div class="button-group">
+            <button type="button" onclick="saveForm()">Guardar</button>
+            <button type="reset" class="reset">Limpiar</button>
+            <button type="button" class="close" onclick="deleteRecord()">Eliminar</button>
+        </div>
+
+        <h3>Buscar Ficha por Apellido</h3>
+        <input type="text" id="search_apellido" placeholder="Ingrese apellido">
+        <button type="button" class="search" onclick="searchByLastName()">Buscar</button>
+    </form>
+
+    <script>
+        const registros = [];
+
+        function saveForm() {
+            const rut = document.getElementById('rut').value;
+            const nombres = document.getElementById('nombres').value;
+            const apellidos = document.getElementById('apellidos').value;
+            const direccion = document.getElementById('direccion').value;
+            const ciudad = document.getElementById('ciudad').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
+            const estado_civil = document.getElementById('estado_civil').value;
+            const comentarios = document.getElementById('comentarios').value;
+
+            const registroExistente = registros.find(reg => reg.rut === rut);
+
+            if (registroExistente) {
+                if (confirm('El registro ya existe. ¿Desea sobrescribirlo?')) {
+                    Object.assign(registroExistente, {
+                        nombres, apellidos, direccion, ciudad, telefono, email, fecha_nacimiento, estado_civil, comentarios
+                    });
+                    alert('Registro actualizado exitosamente.');
+                }
+            } else {
+                registros.push({ rut, nombres, apellidos, direccion, ciudad, telefono, email, fecha_nacimiento, estado_civil, comentarios });
+                alert('Registro guardado exitosamente.');
+            }
+        }
+
+        function deleteRecord() {
+            const rut = document.getElementById('rut').value;
+            const index = registros.findIndex(reg => reg.rut === rut);
+
+            if (index !== -1) {
+                registros.splice(index, 1);
+                alert('Registro eliminado exitosamente.');
+                document.getElementById('medicalForm').reset();
+            } else {
+                alert('Registro no encontrado.');
+            }
+        }
+
+        function searchByLastName() {
+            const apellido = document.getElementById('search_apellido').value;
+            const registro = registros.find(reg => reg.apellidos.toLowerCase() === apellido.toLowerCase());
+
+            if (registro) {
+                alert(`Registro encontrado:\n\nRUT: ${registro.rut}\nNombres: ${registro.nombres}\nApellidos: ${registro.apellidos}`);
+            } else {
+                alert('No se encontró ningún registro con ese apellido.');
+            }
+        }
+    </script>
+</body>
+</html>
